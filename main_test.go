@@ -34,6 +34,26 @@ func TestSubtract(t *testing.T) {
 	}
 }
 
+func TestTableSubtract(t *testing.T) {
+	var tests = []struct {
+		inputX   int
+		inputY   int
+		expected int
+	}{
+		{6, 2, 4},
+		{3, 2, 1},
+		{4, 2, 2},
+		{-1, 2, -3},
+		{99999, 2, 99997},
+	}
+
+	for _, test := range tests {
+		if output := subtract(test.inputX, test.inputY); output != test.expected {
+			t.Error("Test Failed: {} inputted, {} expected, recieved: {}", test.inputX, test.inputY, test.expected, output)
+		}
+	}
+}
+
 func TestMultiply(t *testing.T) {
 	if multiply(2, 5) != 10 {
 		t.Error("Expected 2 * 5 to equal 10")
