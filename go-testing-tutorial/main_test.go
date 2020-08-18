@@ -126,7 +126,11 @@ func TestHttp(t *testing.T) {
 
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(resp.StatusCode)
+
+	if resp.StatusCode != 200 {
+		t.Error("Test failed. Expected status code to be 200")
+	}
+
 	fmt.Println(resp.Header.Get("Content-Type"))
 	fmt.Println(string(body))
 }
