@@ -1,6 +1,10 @@
 package main
 
 import (
+	"io"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -104,5 +108,33 @@ func TestTableMultiply(t *testing.T) {
 		if output := multiply(test.inputX, test.inputY); output != test.expected {
 			t.Error("Test Failed: {} inputted, {} expected, recieved: {}", test.inputX, test.inputY, test.expected, output)
 		}
+	}
+}
+
+func TestHttp(t *testing.T) {
+	//
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		// here we write our expected response, in this case, we return a
+		// JSON string which is typical when dealing with REST APIs
+		io.WriteString(w, "{ \"status\": \"expected service response\"}")
+	}
+
+	req := httptest.NewRequest("GET", "https://tutorialedge.net", nil)
+	w := httptest.NewRecorder()
+	handler(w, req)
+
+	resp := w.Result()
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	if resp.StatusCode != 200 {
+		t.Error("Test failed. Expected status code to be 200.")
+	}
+
+	if resp.Header.Get("Content-Type") != "text/plain; charset=utf-8" {
+		t.Error("Test failed. Expected content type to equal text/plain; charset=utf-8")
+	}
+
+	if string(body) != "{ \"status\": \"expected service response\"}" {
+		t.Error("Test failed. Expected status to equal expected service response.")
 	}
 }
