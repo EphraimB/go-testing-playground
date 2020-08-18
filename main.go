@@ -7,7 +7,7 @@ func add(x int, y int) (result int) {
 }
 
 func subtract(x int, y int) (result int) {
-	result = x * y
+	result = x - y
 
 	return result
 }
