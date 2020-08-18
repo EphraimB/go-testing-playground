@@ -12,6 +12,12 @@ func subtract(x int, y int) (result int) {
 	return result
 }
 
+func multiply(x int, y int) (result int) {
+	result = x * y
+
+	return result
+}
+
 func main() {
 
 }
