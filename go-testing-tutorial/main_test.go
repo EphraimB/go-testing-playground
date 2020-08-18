@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -134,5 +133,8 @@ func TestHttp(t *testing.T) {
 	if resp.Header.Get("Content-Type") != "text/plain; charset=utf-8" {
 		t.Error("Test failed. Expected content type to equal text/plain; charset=utf-8")
 	}
-	fmt.Println(string(body))
+
+	if string(body) != "{ \"status\": \"expected service response\"}" {
+		t.Error("Test failed. Expected status to equal expected service response.")
+	}
 }
