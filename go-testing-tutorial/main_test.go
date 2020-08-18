@@ -128,9 +128,11 @@ func TestHttp(t *testing.T) {
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	if resp.StatusCode != 200 {
-		t.Error("Test failed. Expected status code to be 200")
+		t.Error("Test failed. Expected status code to be 200.")
 	}
 
-	fmt.Println(resp.Header.Get("Content-Type"))
+	if resp.Header.Get("Content-Type") != "text/plain; charset=utf-8" {
+		t.Error("Test failed. Expected content type to equal text/plain; charset=utf-8")
+	}
 	fmt.Println(string(body))
 }
