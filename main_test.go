@@ -59,3 +59,23 @@ func TestMultiply(t *testing.T) {
 		t.Error("Expected 2 * 5 to equal 10")
 	}
 }
+
+func TestTableMultiply(t *testing.T) {
+	var tests = []struct {
+		inputX   int
+		inputY   int
+		expected int
+	}{
+		{2, 2, 4},
+		{1, 1, 1},
+		{1, 2, 2},
+		{-1, 3, -3},
+		{99999, 1, 99999},
+	}
+
+	for _, test := range tests {
+		if output := multiply(test.inputX, test.inputY); output != test.expected {
+			t.Error("Test Failed: {} inputted, {} expected, recieved: {}", test.inputX, test.inputY, test.expected, output)
+		}
+	}
+}
