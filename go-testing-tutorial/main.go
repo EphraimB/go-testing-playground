@@ -31,16 +31,15 @@ func multiply(x int, y int) (result int) {
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query().Get("search")
-	fmt.Println(query)
 	// JSON string which is typical when dealing with REST APIs
 	io.WriteString(w, "{ \"status\": \"expected service response\"}")
 
 	param1 := r.URL.Query().Get("search")
+
 	if param1 == "" {
-		w.WriteHeader(400)
+		w.WriteHeader(http.StatusBadRequest)
 	} else {
-		w.WriteHeader(200)
+		w.WriteHeader(http.StatusOK)
 	}
 }
 
