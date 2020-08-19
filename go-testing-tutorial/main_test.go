@@ -139,19 +139,17 @@ func TestHttp(t *testing.T) {
 	}
 }
 
-func TestAdditionalHandler(t *testing.T) {
+func TestSearchHandler(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		// here we write our expected response, in this case, we return a
 		// JSON string which is typical when dealing with REST APIs
 		io.WriteString(w, "{ \"status\": \"expected service response\"}")
 	}
 
-	req := httptest.NewRequest("GET", "/", nil)
+	req, err := http.NewRequest("GET", "/?search=Testing", nil)
+	if err != nil {
+		t.Error("Error")
+	}
 	w := httptest.NewRecorder()
 	handler(w, req)
-	if additionalHandler("Testing") == "" {
-		w.WriteHeader(400)
-	} else {
-		w.WriteHeader(200)
-	}
 }
