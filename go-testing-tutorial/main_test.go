@@ -141,11 +141,7 @@ func TestHttp(t *testing.T) {
 
 func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		if param1 != "" {
-			w.WriteHeader(400)
-		} else {
-			w.WriteHeader(200)
-		}
+
 	}
 
 	req, err := http.NewRequest("GET", "/", nil)

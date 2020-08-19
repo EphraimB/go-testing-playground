@@ -37,7 +37,11 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "{ \"status\": \"expected service response\"}")
 
 	param1 := r.URL.Query().Get("search")
-
+	if param1 != "" {
+		w.WriteHeader(400)
+	} else {
+		w.WriteHeader(200)
+	}
 }
 
 func main() {
