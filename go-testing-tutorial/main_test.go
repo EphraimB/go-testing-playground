@@ -138,3 +138,20 @@ func TestHttp(t *testing.T) {
 		t.Error("Test failed. Expected status to equal expected service response.")
 	}
 }
+
+func TestAdditionalHandler(t *testing.T) {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		// here we write our expected response, in this case, we return a
+		// JSON string which is typical when dealing with REST APIs
+		io.WriteString(w, "{ \"status\": \"expected service response\"}")
+	}
+
+	req := httptest.NewRequest("GET", "/", nil)
+	w := httptest.NewRecorder()
+	handler(w, req)
+	if additionalHandler("Testing") == "" {
+		w.WriteHeader(400)
+	} else {
+		w.WriteHeader(200)
+	}
+}
