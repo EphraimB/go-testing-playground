@@ -140,16 +140,12 @@ func TestHttp(t *testing.T) {
 }
 
 func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {
-	handler := func(w http.ResponseWriter, r *http.Request) {
-
-	}
-
 	req, err := http.NewRequest("GET", "/", nil)
 	if err != nil {
 		return
 	}
 	w := httptest.NewRecorder()
-	handler(w, req)
+	searchHandler(w, req)
 
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)
