@@ -150,7 +150,7 @@ func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	if resp.StatusCode == 400 {
+	if resp.StatusCode != 400 {
 		t.Error("Wrong status code")
 	}
 
