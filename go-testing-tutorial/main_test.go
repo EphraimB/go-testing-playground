@@ -154,10 +154,6 @@ func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {
 		t.Error("Wrong status code")
 	}
 
-	if resp.Header.Get("Content-Type") != "text/plain; charset=utf-8" {
-		t.Error("Wrong content type")
-	}
-
 	if string(body) != "{ \"status\": \"expected service response\"}" {
 		t.Error("Wrong body")
 	}
