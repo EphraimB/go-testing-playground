@@ -139,13 +139,8 @@ func TestHttp(t *testing.T) {
 	}
 }
 
-func TestSearchHandler(t *testing.T) {
+func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
-		// here we write our expected response, in this case, we return a
-		// JSON string which is typical when dealing with REST APIs
-		io.WriteString(w, "{ \"status\": \"expected service response\"}")
-
-		param1 := r.URL.Query().Get("search")
 		if param1 != "" {
 			w.WriteHeader(400)
 		} else {
@@ -153,7 +148,7 @@ func TestSearchHandler(t *testing.T) {
 		}
 	}
 
-	req, err := http.NewRequest("GET", "/?search=Testing", nil)
+	req, err := http.NewRequest("GET", "/", nil)
 	if err != nil {
 		return
 	}
