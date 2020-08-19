@@ -144,12 +144,34 @@ func TestSearchHandler(t *testing.T) {
 		// here we write our expected response, in this case, we return a
 		// JSON string which is typical when dealing with REST APIs
 		io.WriteString(w, "{ \"status\": \"expected service response\"}")
+
+		param1 := r.URL.Query().Get("search")
+		if param1 != "" {
+			w.WriteHeader(400)
+		} else {
+			w.WriteHeader(200)
+		}
 	}
 
 	req, err := http.NewRequest("GET", "/?search=Testing", nil)
 	if err != nil {
-		t.Error("Error")
+		return
 	}
 	w := httptest.NewRecorder()
 	handler(w, req)
+
+	resp := w.Result()
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	if resp.StatusCode == 400 {
+		t.Error("Wrong status code")
+	}
+
+	if resp.Header.Get("Content-Type") != "text/plain; charset=utf-8" {
+		t.Error("Wrong content type")
+	}
+
+	if string(body) != "{ \"status\": \"expected service response\"}" {
+		t.Error("Wrong body")
+	}
 }
