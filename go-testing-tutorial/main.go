@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -40,6 +42,21 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// JSON string which is typical when dealing with REST APIs
 	io.WriteString(w, "{ \"status\": \"expected service response\"}")
+
+	type SearchResults struct {
+		Results []string `json:"Results"`
+	}
+
+	searchResults := SearchResults{
+		Results: []string{"Cutie", "Autism", "iPhone 12"},
+	}
+
+	var jsonData []byte
+	jsonData, err := json.Marshal(searchResults)
+	if err != nil {
+		log.Println(err)
+	}
+	fmt.Println(string(jsonData))
 }
 
 func main() {
