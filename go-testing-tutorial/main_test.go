@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -153,8 +154,9 @@ func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {
 	if resp.StatusCode != 400 {
 		t.Error("Wrong status code")
 	}
+	fmt.Println(string(body))
 
-	if string(body) != "{ \"status\": \"expected service response\"}" {
+	if string(body) != "{\"status\": \"expected service response\"}{\"jsonData\": \"{\"Results\":[\"Cutie\",\"Autism\",\"iPhone 12\"]}\"}" {
 		t.Error("Wrong body")
 	}
 }
