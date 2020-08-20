@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -136,5 +137,27 @@ func TestHttp(t *testing.T) {
 
 	if string(body) != "{ \"status\": \"expected service response\"}" {
 		t.Error("Test failed. Expected status to equal expected service response.")
+	}
+}
+
+func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {
+	req, err := http.NewRequest("GET", "/?search=Testing", nil)
+	if err != nil {
+		return
+	}
+	w := httptest.NewRecorder()
+	searchHandler(w, req)
+
+	resp := w.Result()
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	fmt.Println(resp.StatusCode)
+	if resp.StatusCode != 200 {
+		t.Error("Wrong status code")
+	}
+	fmt.Println(string(body))
+
+	if string(body) != "{\"Results\":[\"Cutie\",\"Autism\",\"iPhone 12\"]}" {
+		t.Error("Wrong body")
 	}
 }
