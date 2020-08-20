@@ -34,7 +34,7 @@ func multiply(x int, y int) (result int) {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	param1 := r.URL.Query().Get("search")
-
+	fmt.Println("Param1 is: " + param1)
 	if param1 == "" {
 		w.WriteHeader(http.StatusBadRequest)
 	} else {
