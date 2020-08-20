@@ -39,24 +39,24 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	} else {
 		w.WriteHeader(http.StatusOK)
-	}
 
-	type SearchResults struct {
-		Results []string `json:"Results"`
-	}
+		type SearchResults struct {
+			Results []string `json:"Results"`
+		}
 
-	searchResults := SearchResults{
-		Results: []string{"Cutie", "Autism", "iPhone 12"},
-	}
+		searchResults := SearchResults{
+			Results: []string{"Cutie", "Autism", "iPhone 12"},
+		}
 
-	var jsonData []byte
-	jsonData, err := json.Marshal(searchResults)
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Println(string(jsonData))
+		var jsonData []byte
+		jsonData, err := json.Marshal(searchResults)
+		if err != nil {
+			log.Println(err)
+		}
+		fmt.Println(string(jsonData))
 
-	io.WriteString(w, string(jsonData))
+		io.WriteString(w, string(jsonData))
+	}
 }
 
 func main() {
