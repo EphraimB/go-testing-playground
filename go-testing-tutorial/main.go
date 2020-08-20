@@ -40,8 +40,6 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusOK)
 	}
-	// JSON string which is typical when dealing with REST APIs
-	io.WriteString(w, "{\"status\": \"expected service response\"}")
 
 	type SearchResults struct {
 		Results []string `json:"Results"`
@@ -58,7 +56,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println(string(jsonData))
 
-	io.WriteString(w, "{\"jsonData\": \""+string(jsonData)+"\"}")
+	io.WriteString(w, string(jsonData))
 }
 
 func main() {

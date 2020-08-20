@@ -156,7 +156,7 @@ func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {
 	}
 	fmt.Println(string(body))
 
-	if string(body) != "{\"status\": \"expected service response\"}{\"jsonData\": \"{\"Results\":[\"Cutie\",\"Autism\",\"iPhone 12\"]}\"}" {
+	if string(body) != "{\"Results\":[\"Cutie\",\"Autism\",\"iPhone 12\"]}" {
 		t.Error("Wrong body")
 	}
 }
