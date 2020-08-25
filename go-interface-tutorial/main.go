@@ -68,10 +68,10 @@ func calculateSalesRate(sm ShopModel) (string, error) {
 	return fmt.Sprintf("%.2f", rate), nil
 }
 
-type repository interface {
+type Repository interface {
 	search(query string) []string
 }
 
-func FakeDBRepository(r repository) {
+func FakeDBRepository(r Repository) {
 
 }
