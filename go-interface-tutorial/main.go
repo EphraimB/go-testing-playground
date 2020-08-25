@@ -72,6 +72,10 @@ type Repository interface {
 	search(query string) []string
 }
 
-func FakeDBRepository(r Repository) {
+type FakeDBRepository struct {
+	searchQuery []string
+}
+
+func (f FakeDBRepository) search() {
 
 }
