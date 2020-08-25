@@ -71,3 +71,7 @@ func calculateSalesRate(sm ShopModel) (string, error) {
 type repository interface {
 	search(query string) []string
 }
+
+func FakeDBRepository(r repository) {
+
+}
