@@ -67,3 +67,7 @@ func calculateSalesRate(sm ShopModel) (string, error) {
 	rate := float64(sales) / float64(customers)
 	return fmt.Sprintf("%.2f", rate), nil
 }
+
+type repository interface {
+	search(query string) []string
+}
