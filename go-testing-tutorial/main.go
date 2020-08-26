@@ -36,7 +36,11 @@ type Repository interface {
 	search(query string) []string
 }
 
-func (repository Repository) searchHandler(w http.ResponseWriter, r *http.Request) {
+type API struct {
+	repository Repository
+}
+
+func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 	param1 := r.URL.Query().Get("search")
 	fmt.Println("Param1 is: " + param1)
 	if param1 == "" {
@@ -44,6 +48,7 @@ func (repository Repository) searchHandler(w http.ResponseWriter, r *http.Reques
 	} else {
 		w.WriteHeader(http.StatusOK)
 
+		// use api.repository here
 		type SearchResults struct {
 			Results []string `json:"Results"`
 		}
@@ -51,6 +56,7 @@ func (repository Repository) searchHandler(w http.ResponseWriter, r *http.Reques
 		searchResults := SearchResults{
 			Results: []string{"Cutie", "Autism", "iPhone 12"},
 		}
+		// ----------------------------------
 
 		var jsonData []byte
 		jsonData, err := json.Marshal(searchResults)
@@ -61,8 +67,4 @@ func (repository Repository) searchHandler(w http.ResponseWriter, r *http.Reques
 
 		io.WriteString(w, string(jsonData))
 	}
-}
-
-func main() {
-	fmt.Println("Hello World")
 }

@@ -140,13 +140,23 @@ func TestHttp(t *testing.T) {
 	}
 }
 
+type TestRepository struct {
+}
+
+func (t *TestRepository) search(query string) []string {
+	return []string{"whaterver", "iiiiii"}
+}
+
 func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {
 	req, err := http.NewRequest("GET", "/?search=Testing", nil)
 	if err != nil {
 		return
 	}
 	w := httptest.NewRecorder()
-	searchHandler(w, req)
+	api := API{
+		repository: &TestRepository{},
+	}
+	api.searchHandler(w, req)
 
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)
@@ -157,7 +167,7 @@ func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {
 	}
 	fmt.Println(string(body))
 
-	if string(body) != "{\"Results\":[\"Cutie\",\"Autism\",\"iPhone 12\"]}" {
+	if string(body) != "{\"Results\":[\"whatever\",\"1111\"]}" {
 		t.Error("Wrong body")
 	}
 }
