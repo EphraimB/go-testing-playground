@@ -144,7 +144,7 @@ type TestRepository struct {
 }
 
 func (t *TestRepository) search(query string) []string {
-	return []string{"whaterver", "iiiiii"}
+	return []string{"whatever", "1111"}
 }
 
 func TestSearchHandlerShouldReturn404IfNoSearchQueryIsPresent(t *testing.T) {

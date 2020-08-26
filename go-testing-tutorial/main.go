@@ -54,7 +54,7 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		searchResults := SearchResults{
-			Results: []string{"Cutie", "Autism", "iPhone 12"},
+			Results: api.repository.search("whatever"),
 		}
 		// ----------------------------------
 
@@ -67,4 +67,8 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 
 		io.WriteString(w, string(jsonData))
 	}
+}
+
+func main() {
+
 }
