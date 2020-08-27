@@ -54,7 +54,7 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		searchResults := SearchResults{
-			Results: api.repository.search("whatever"),
+			Results: api.repository.search(param1),
 		}
 		// ----------------------------------
 
