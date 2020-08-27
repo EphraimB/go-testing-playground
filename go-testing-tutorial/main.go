@@ -32,7 +32,15 @@ func multiply(x int, y int) (result int) {
 	return result
 }
 
-func searchHandler(w http.ResponseWriter, r *http.Request) {
+type Repository interface {
+	search(query string) []string
+}
+
+type API struct {
+	repository Repository
+}
+
+func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 	param1 := r.URL.Query().Get("search")
 	fmt.Println("Param1 is: " + param1)
 	if param1 == "" {
@@ -40,13 +48,15 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusOK)
 
+		// use api.repository here
 		type SearchResults struct {
 			Results []string `json:"Results"`
 		}
 
 		searchResults := SearchResults{
-			Results: []string{"Cutie", "Autism", "iPhone 12"},
+			Results: api.repository.search(param1),
 		}
+		// ----------------------------------
 
 		var jsonData []byte
 		jsonData, err := json.Marshal(searchResults)
@@ -60,5 +70,5 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	fmt.Println("Hello World")
+
 }
