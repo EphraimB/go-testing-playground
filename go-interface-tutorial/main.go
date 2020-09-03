@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"time"
+
+	_ "github.com/lib/pq"
 )
 
 // Create our own custom ShopModel interface. Notice that it is perfectly
@@ -14,6 +16,7 @@ import (
 type ShopModel interface {
 	CountCustomers(time.Time) (int, error)
 	CountSales(time.Time) (int, error)
+	CreateBooks() (int, error)
 }
 
 // The ShopDB type satisfies our new custom ShopModel interface, because it
@@ -34,8 +37,14 @@ func (sdb *ShopDB) CountSales(since time.Time) (int, error) {
 	return count, err
 }
 
+func (sdb *ShopDB) CreateBooks() (int, error) {
+	var count int
+	err := sdb.QueryRow("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY)").Scan(&count)
+	return count, err
+}
+
 func main() {
-	db, err := sql.Open("postgres", "postgres://user:pass@localhost/db")
+	db, err := sql.Open("postgres", "postgres://docker:docker@localhost/db")
 	if err != nil {
 		log.Fatal(err)
 	}
