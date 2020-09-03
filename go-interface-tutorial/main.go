@@ -44,7 +44,8 @@ func (sdb *ShopDB) CreateBooks() (int, error) {
 }
 
 func main() {
-	db, err := sql.Open("postgres", "postgres://docker:docker@localhost/db")
+	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatal(err)
 	}
