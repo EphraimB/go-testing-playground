@@ -47,6 +47,8 @@ func (sdb *ShopDB) CreateBooks() (bool, error) {
 
 		tableExists = false
 	} else {
+		err := nil
+
 		tableExists = true
 	}
 
@@ -67,7 +69,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf(sr)
+	fmt.Printf("%t", sr)
 }
 
 func createBooks(sm ShopModel) (bool, error) {
