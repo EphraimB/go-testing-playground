@@ -38,21 +38,15 @@ func (sdb *ShopDB) CountSales(since time.Time) (int, error) {
 }
 
 func (sdb *ShopDB) CreateBooks() (bool, error) {
-	var tableExists bool
-
 	tableCheck := sdb.QueryRow("SELECT * FROM books")
 
 	if tableCheck == nil {
 		err := sdb.QueryRow("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY)")
 
-		tableExists = false
+		return false, nil
 	} else {
-		err := nil
-
-		tableExists = true
+		return true, nil
 	}
-
-	return tableExists, err
 }
 
 func main() {
