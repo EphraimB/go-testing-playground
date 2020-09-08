@@ -69,10 +69,10 @@ func main() {
 func createBooks(sm ShopModel) (bool, error) {
 	books, err := sm.CreateBooks()
 	if err != nil {
-		return "", err
+		return false, err
 	}
 
-	return fmt.Sprintf("%t", books), nil
+	return fmt.Printf("%t", books), nil
 }
 
 // Swap this to use the ShopModel interface type as the parameter, instead of the
