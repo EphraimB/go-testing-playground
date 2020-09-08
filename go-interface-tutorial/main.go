@@ -16,7 +16,7 @@ import (
 type ShopModel interface {
 	//CountCustomers(time.Time) (int, error)
 	//CountSales(time.Time) (int, error)
-	CreateBooks() (int, error)
+	CreateBooks() (bool, error)
 }
 
 // The ShopDB type satisfies our new custom ShopModel interface, because it
@@ -37,10 +37,20 @@ func (sdb *ShopDB) CountSales(since time.Time) (int, error) {
 	return count, err
 }
 
-func (sdb *ShopDB) CreateBooks() (int, error) {
-	var count int
-	err := sdb.QueryRow("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY)").Scan(&count)
-	return count, err
+func (sdb *ShopDB) CreateBooks() (bool, error) {
+	var tableExists bool
+
+	tableCheck := sdb.QueryRow("SELECT * FROM books")
+
+	if tableCheck == nil {
+		err := sdb.QueryRow("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY)")
+
+		tableExists = false
+	} else {
+		tableExists = true
+	}
+
+	return tableExists, err
 }
 
 func main() {
@@ -60,13 +70,13 @@ func main() {
 	fmt.Printf(sr)
 }
 
-func createBooks(sm ShopModel) (string, error) {
+func createBooks(sm ShopModel) (bool, error) {
 	books, err := sm.CreateBooks()
 	if err != nil {
 		return "", err
 	}
 
-	return fmt.Sprintf("%.2f", books), nil
+	return fmt.Sprintf("%t", books), nil
 }
 
 // Swap this to use the ShopModel interface type as the parameter, instead of the
