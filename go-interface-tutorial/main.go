@@ -98,6 +98,10 @@ type Repository interface {
 	search(query string) []string
 }
 
+type PostgresRepository struct {
+	searchTable string
+}
+
 type FakeDBRepository struct {
 	searchQuery []string
 }
