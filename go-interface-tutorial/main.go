@@ -38,10 +38,10 @@ func (sdb *ShopDB) CountSales(since time.Time) (int, error) {
 }
 
 func (sdb *ShopDB) CreateBooks() (bool, error) {
-	tableCheck := sdb.QueryRow("SELECT * FROM books")
+	tableCheck := sdb.QueryRow("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND  table_name = 'books')")
 
 	if tableCheck == nil {
-		err := sdb.QueryRow("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY)")
+		sdb.QueryRow("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY)")
 
 		return false, nil
 	} else {
@@ -66,13 +66,13 @@ func main() {
 	fmt.Printf("%t", sr)
 }
 
-func createBooks(sm ShopModel) (bool, error) {
+func createBooks(sm ShopModel) (string, error) {
 	books, err := sm.CreateBooks()
 	if err != nil {
-		return false, err
+		return "", err
 	}
 
-	return fmt.Printf("%t", books), nil
+	return fmt.Sprintf("%t", books), nil
 }
 
 // Swap this to use the ShopModel interface type as the parameter, instead of the
