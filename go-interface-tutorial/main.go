@@ -38,10 +38,10 @@ func (sdb *ShopDB) CountSales(since time.Time) (int, error) {
 }
 
 func (sdb *ShopDB) CreateBooks() (bool, error) {
-	tableCheck, err := sdb.Query("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'books')")
+	tableCheck, err := sdb.Query("SELECT * FROM books;")
 
 	if tableCheck == nil {
-		_, err := sdb.Query("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY)")
+		_, err := sdb.Query("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY);")
 
 		return false, err
 	} else {
