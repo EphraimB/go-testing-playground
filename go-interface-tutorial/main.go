@@ -63,7 +63,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%t", sr)
+	fmt.Printf("%s", sr)
+
+	fmt.Println(PostgresRepository.searchTable)
 }
 
 func createBooks(sm ShopModel) (string, error) {
@@ -104,6 +106,10 @@ type PostgresRepository struct {
 
 type FakeDBRepository struct {
 	searchQuery []string
+}
+
+func (p PostgresRepository) search() string {
+	return "SELECT * FROM books"
 }
 
 func (f FakeDBRepository) search() {

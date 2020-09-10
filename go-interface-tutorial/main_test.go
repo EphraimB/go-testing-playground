@@ -28,7 +28,7 @@ func TestCreateBooks(t *testing.T) {
 
 	// Check that the return value is as expected, based on the mocked
 	// inputs.
-	exp := ""
+	exp := "true"
 	if sr != exp {
 		t.Fatalf("got %v; expected %v", sr, exp)
 	}
