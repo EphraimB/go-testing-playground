@@ -110,7 +110,9 @@ type FakeDBRepository struct {
 }
 
 func (p PostgresRepository) search(query string) []string {
-	_, err := p.sdb.Query("SELECT * FROM books WHERE title=\"" + query + "\"")
+	query, err := p.sdb.Query("SELECT * FROM books WHERE title=\"" + query + "\"")
+
+	return query
 }
 
 func (f FakeDBRepository) search() {
