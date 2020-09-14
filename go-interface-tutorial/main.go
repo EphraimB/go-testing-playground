@@ -65,7 +65,7 @@ func main() {
 	}
 	fmt.Printf("%s", sr)
 
-	fmt.Println(PostgresRepository.searchTable)
+	//fmt.Println(PostgresRepository.searchTable)
 }
 
 func createBooks(sm ShopModel) (string, error) {
@@ -102,14 +102,15 @@ type Repository interface {
 
 type PostgresRepository struct {
 	searchTable []string
+	sdb         *ShopDB
 }
 
 type FakeDBRepository struct {
 	searchQuery []string
 }
 
-func (p PostgresRepository) search() []string {
-	return "SELECT * FROM books WHERE title=\"" + query + "\""
+func (p PostgresRepository) search(query string) []string {
+	_, err := p.sdb.Query("SELECT * FROM books WHERE title=\"" + query + "\"")
 }
 
 func (f FakeDBRepository) search() {
