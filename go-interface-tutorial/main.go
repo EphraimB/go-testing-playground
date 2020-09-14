@@ -109,7 +109,7 @@ type FakeDBRepository struct {
 }
 
 func (p PostgresRepository) search() []string {
-	return "SELECT * FROM books WHERE title=\'" + query + "\'"
+	return "SELECT * FROM books WHERE title=\"" + query + "\""
 }
 
 func (f FakeDBRepository) search() {
