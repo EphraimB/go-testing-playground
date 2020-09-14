@@ -101,15 +101,15 @@ type Repository interface {
 }
 
 type PostgresRepository struct {
-	searchTable string
+	searchTable []string
 }
 
 type FakeDBRepository struct {
 	searchQuery []string
 }
 
-func (p PostgresRepository) search() string {
-	return "SELECT * FROM books"
+func (p PostgresRepository) search() []string {
+	return "SELECT * FROM books WHERE title=\'" + query + "\'"
 }
 
 func (f FakeDBRepository) search() {
