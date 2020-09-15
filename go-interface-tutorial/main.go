@@ -110,7 +110,8 @@ type FakeDBRepository struct {
 }
 
 func (p PostgresRepository) search(query string) []string {
-	rows, err := p.sdb.Query("SELECT * FROM books WHERE title=\"" + query + "\"")
+	query = "stars"
+	rows, err := p.sdb.Query("SELECT * FROM books WHERE title='" + query + "'")
 	if err != nil {
 		fmt.Println("Failed to run query", err)
 		return
