@@ -114,13 +114,13 @@ func (p PostgresRepository) search(query string) []string {
 	rows, err := p.sdb.Query("SELECT * FROM books WHERE title='" + query + "'")
 	if err != nil {
 		fmt.Println("Failed to run query", err)
-		return
+		return []string{}
 	}
 
 	cols, err := rows.Columns()
 	if err != nil {
 		fmt.Println("Failed to get columns", err)
-		return
+		return []string{}
 	}
 
 	// Result is your slice string.
@@ -136,7 +136,7 @@ func (p PostgresRepository) search(query string) []string {
 		err = rows.Scan(dest...)
 		if err != nil {
 			fmt.Println("Failed to scan row", err)
-			return
+			return []string{}
 		}
 
 		for i, raw := range rawResult {
