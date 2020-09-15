@@ -110,9 +110,46 @@ type FakeDBRepository struct {
 }
 
 func (p PostgresRepository) search(query string) []string {
-	query, err := p.sdb.Query("SELECT * FROM books WHERE title=\"" + query + "\"")
+	rows, err := p.sdb.Query("SELECT * FROM books WHERE title=\"" + query + "\"")
+	if err != nil {
+		fmt.Println("Failed to run query", err)
+		return
+	}
 
-	return query
+	cols, err := rows.Columns()
+	if err != nil {
+		fmt.Println("Failed to get columns", err)
+		return
+	}
+
+	// Result is your slice string.
+	rawResult := make([][]byte, len(cols))
+	result := make([]string, len(cols))
+
+	dest := make([]interface{}, len(cols)) // A temporary interface{} slice
+	for i, _ := range rawResult {
+		dest[i] = &rawResult[i] // Put pointers to each string in the interface slice
+	}
+
+	for rows.Next() {
+		err = rows.Scan(dest...)
+		if err != nil {
+			fmt.Println("Failed to scan row", err)
+			return
+		}
+
+		for i, raw := range rawResult {
+			if raw == nil {
+				result[i] = "\\N"
+			} else {
+				result[i] = string(raw)
+			}
+		}
+
+		fmt.Printf("%#v\n", result)
+	}
+
+	return result
 }
 
 func (f FakeDBRepository) search() {
