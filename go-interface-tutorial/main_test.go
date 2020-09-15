@@ -50,3 +50,17 @@ func TestCreateBooks(t *testing.T) {
 // 		t.Fatalf("got %v; expected %v", sr, exp)
 // 	}
 // }
+
+type TestRepository struct {
+}
+
+func (t *TestRepository) search(query string) []string {
+	return []string{"Star Wars", "Harry Potter"}
+}
+
+func TestPostgresQueries(t *testing.T) {
+	p := PostgresRepository{
+		searchTable: &TestRepository{},
+	}
+	p.search("testing")
+}
