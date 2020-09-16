@@ -62,5 +62,5 @@ func TestPostgresQueries(t *testing.T) {
 	p := PostgresRepository{
 		repository: &TestRepository{},
 	}
-	p.search("testing")
+	p.search("Testing")
 }
