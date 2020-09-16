@@ -60,7 +60,7 @@ func (t *TestRepository) search(query string) []string {
 
 func TestPostgresQueries(t *testing.T) {
 	p := PostgresRepository{
-		searchTable: &TestRepository{},
+		repository: &TestRepository{},
 	}
 	p.search("Testing")
 }
