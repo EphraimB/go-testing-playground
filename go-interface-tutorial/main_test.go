@@ -51,13 +51,6 @@ func TestCreateBooks(t *testing.T) {
 // 	}
 // }
 
-type TestRepository struct {
-}
-
-func (t *TestRepository) search(query string) []string {
-	return []string{"Star Wars", "Harry Potter"}
-}
-
 func TestPostgresQueries(t *testing.T) {
 	p := PostgresRepository{
 		sdb: &TestRepository{},
