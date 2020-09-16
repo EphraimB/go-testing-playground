@@ -1,7 +1,9 @@
 // File: main_test.go
 package main
 
-import "testing"
+import (
+	"testing"
+)
 
 type MockShopDB struct{}
 
@@ -53,7 +55,7 @@ func TestCreateBooks(t *testing.T) {
 
 func TestPostgresQueries(t *testing.T) {
 	p := PostgresRepository{
-		sdb: &TestRepository{},
+		sdb: *ShopDB.Query("SELECT * FROM books"),
 	}
 	p.search("Testing")
 }
