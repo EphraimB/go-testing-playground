@@ -101,9 +101,7 @@ type Repository interface {
 }
 
 type PostgresRepository struct {
-	repository  Repository
-	searchTable []string
-	sdb         *ShopDB
+	sdb *ShopDB
 }
 
 type FakeDBRepository struct {
