@@ -67,4 +67,8 @@ func TestPostgresQueries(t *testing.T) {
 		sdb: &ShopDB{db},
 	}
 	p.search("Testing")
+
+	if query != "Testing" {
+		t.Error("Wrong body")
+	}
 }
