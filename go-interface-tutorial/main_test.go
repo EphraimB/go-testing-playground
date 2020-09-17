@@ -66,9 +66,9 @@ func TestPostgresQueries(t *testing.T) {
 	p := PostgresRepository{
 		sdb: &ShopDB{db},
 	}
-	p.search("Testing")
+	query := p.search("Testing")
 
-	if query != "Testing" {
-		t.Error("Wrong body")
+	if len(query) != 1 {
+		t.Error("Wrong length of strings")
 	}
 }
