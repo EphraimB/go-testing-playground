@@ -3,6 +3,7 @@ package main
 
 import (
 	"database/sql"
+	"log"
 	"testing"
 )
 
@@ -55,8 +56,15 @@ func TestCreateBooks(t *testing.T) {
 // }
 
 func TestPostgresQueries(t *testing.T) {
+	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 	p := PostgresRepository{
-		sdb: (*sql.DB).Query("SELECT * FROM books"),
+		sdb: &ShopDB{db},
 	}
 	p.search("Testing")
 }
