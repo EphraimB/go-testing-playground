@@ -2,6 +2,7 @@
 package main
 
 import (
+	"database/sql"
 	"testing"
 )
 
@@ -55,7 +56,7 @@ func TestCreateBooks(t *testing.T) {
 
 func TestPostgresQueries(t *testing.T) {
 	p := PostgresRepository{
-		sdb: *ShopDB.Query("SELECT * FROM books"),
+		sdb: (*sql.DB).Query("SELECT * FROM books"),
 	}
 	p.search("Testing")
 }
