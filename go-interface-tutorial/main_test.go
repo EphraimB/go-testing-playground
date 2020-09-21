@@ -71,4 +71,20 @@ func TestPostgresQueries(t *testing.T) {
 	if len(query) != 1 {
 		t.Error("Wrong length of strings")
 	}
+	addBookWithTitle("Cutie")
+}
+
+func addBookWithTitle(title string) {
+	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	p := PostgresRepository{
+		sdb: &ShopDB{db},
+	}
+
+	p.sdb.Query("INSERT INTO books VALUES ('" + title + "')")
 }
