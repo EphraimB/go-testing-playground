@@ -78,6 +78,8 @@ func TestPostgresQueries(t *testing.T) {
 	if strings.Join(query, "") != "Cutie" {
 		t.Error("Wrong title")
 	}
+
+	p.sdb.Query("DELETE FROM books WHERE title='" + strings.Join(query, "") + "'")
 }
 
 func addBookWithTitle(title string) {
