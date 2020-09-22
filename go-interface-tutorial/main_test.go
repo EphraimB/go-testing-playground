@@ -60,6 +60,8 @@ func TestPostgresQueries(t *testing.T) {
 	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 
+	word := "Cutie"
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,17 +69,17 @@ func TestPostgresQueries(t *testing.T) {
 	p := PostgresRepository{
 		sdb: &ShopDB{db},
 	}
-	query := p.search("Cutie")
+	query := p.search(word)
 
 	p.sdb.Query("DELETE FROM books WHERE title='" + strings.Join(query, "") + "'")
 
-	addBookWithTitle("Cutie")
+	addBookWithTitle(word)
 
 	if len(query) != 1 {
 		t.Error("Wrong length of strings")
 	}
 
-	if strings.Join(query, "") != "Cutie" {
+	if strings.Join(query, "") != word {
 		t.Error("Wrong title")
 	}
 }
