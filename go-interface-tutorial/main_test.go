@@ -4,6 +4,7 @@ package main
 import (
 	"database/sql"
 	"log"
+	"strings"
 	"testing"
 )
 
@@ -66,12 +67,17 @@ func TestPostgresQueries(t *testing.T) {
 	p := PostgresRepository{
 		sdb: &ShopDB{db},
 	}
-	query := p.search("Testing")
+	addBookWithTitle("Cutie")
+
+	query := p.search("Cutie")
 
 	if len(query) != 1 {
 		t.Error("Wrong length of strings")
 	}
-	addBookWithTitle("Cutie")
+
+	if strings.Join(query, "") != "Cutie" {
+		t.Error("Wrong title")
+	}
 }
 
 func addBookWithTitle(title string) {
