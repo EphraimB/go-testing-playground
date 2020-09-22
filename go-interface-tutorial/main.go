@@ -111,44 +111,26 @@ type FakeDBRepository struct {
 func (p PostgresRepository) search(query string) []string {
 	rows, err := p.sdb.Query("SELECT * FROM books WHERE title='" + query + "'")
 	if err != nil {
-		fmt.Println("Failed to run query", err)
-		return []string{}
+		log.Fatal(err)
 	}
+	defer rows.Close()
 
-	cols, err := rows.Columns()
-	if err != nil {
-		fmt.Println("Failed to get columns", err)
-		return []string{}
-	}
-
-	// Result is your slice string.
-	rawResult := make([][]byte, len(cols))
-	result := make([]string, len(cols))
-
-	dest := make([]interface{}, len(cols)) // A temporary interface{} slice
-	for i, _ := range rawResult {
-		dest[i] = &rawResult[i] // Put pointers to each string in the interface slice
-	}
-
+	names := make([]string, 0)
 	for rows.Next() {
-		err = rows.Scan(dest...)
-		if err != nil {
-			fmt.Println("Failed to scan row", err)
-			return []string{}
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			log.Fatal(err)
 		}
-
-		for i, raw := range rawResult {
-			if raw == nil {
-				result[i] = "\\N"
-			} else {
-				result[i] = string(raw)
-			}
-		}
-
-		fmt.Printf("%#v\n", result)
+		names = append(names, name)
+	}
+	// Check for errors from iterating over rows.
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
 	}
 
-	return result
+	fmt.Printf("%#v\n", names)
+
+	return names
 }
 
 func (f FakeDBRepository) search() {
