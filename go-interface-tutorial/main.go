@@ -3,6 +3,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -50,6 +51,23 @@ func (sdb *ShopDB) CreateBooks() (bool, error) {
 	}
 }
 
+func search(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	type Result struct {
+		Results []string `json:"results"`
+		Count   int      `json:"count"`
+	}
+
+	result := Result{
+		Results: []string{},
+		Count:   0,
+	}
+
+	res, _ := json.Marshal(result)
+	fmt.Println(string(res))
+}
+
 func main() {
 	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
@@ -66,6 +84,7 @@ func main() {
 	}
 	fmt.Printf("%s", sr)
 
+	http.HandleFunc("/", search)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
