@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -65,7 +66,7 @@ func main() {
 	}
 	fmt.Printf("%s", sr)
 
-	//fmt.Println(PostgresRepository.searchTable)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func createBooks(sm ShopModel) (string, error) {
