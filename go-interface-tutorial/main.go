@@ -65,6 +65,7 @@ func search(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res, _ := json.Marshal(result)
+	w.Write(res)
 	fmt.Println(string(res))
 }
 
