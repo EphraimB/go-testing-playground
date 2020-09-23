@@ -69,11 +69,12 @@ func TestPostgresQueries(t *testing.T) {
 	p := PostgresRepository{
 		sdb: &ShopDB{db},
 	}
-	query := p.search(word)
 
-	p.sdb.Query("DELETE FROM books WHERE title='" + strings.Join(query, "") + "'")
+	p.sdb.Query("DELETE FROM books WHERE title='" + word + "'")
 
 	addBookWithTitle(word)
+
+	query := p.search(word)
 
 	if len(query) != 1 {
 		t.Error("Wrong length of strings")
