@@ -41,7 +41,7 @@ func (sdb *ShopDB) CreateBooks() (bool, error) {
 	tableCheck, err := sdb.Query("SELECT * FROM books;")
 
 	if tableCheck == nil {
-		_, err := sdb.Query("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY);")
+		_, err := sdb.Query("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY)")
 
 		return false, err
 	} else {
