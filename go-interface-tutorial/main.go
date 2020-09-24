@@ -55,6 +55,8 @@ type API struct {
 }
 
 func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
+	param1 := r.URL.Query().Get("search")
+	fmt.Println("Param1 is: " + param1)
 	w.Header().Set("Content-Type", "application/json")
 
 	type Result struct {
@@ -63,7 +65,7 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := Result{
-		Results: []string{},
+		Results: []string{param1},
 		Count:   0,
 	}
 
@@ -73,6 +75,7 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	m1 := &API{}
 	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -88,7 +91,7 @@ func main() {
 	}
 	fmt.Printf("%s", sr)
 
-	http.HandleFunc("/", searchHandler)
+	http.HandleFunc("/", m1.searchHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
