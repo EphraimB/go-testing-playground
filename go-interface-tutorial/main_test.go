@@ -76,7 +76,7 @@ func TestPostgresQueries(t *testing.T) {
 		p.sdb.Query("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY)")
 	}
 
-	p.sdb.Query("DELETE FROM books WHERE title='" + word + "'")
+	p.sdb.Query("DELETE FROM books WHERE title=$1", word)
 
 	addBookWithTitle(word)
 
@@ -103,5 +103,5 @@ func addBookWithTitle(title string) {
 		sdb: &ShopDB{db},
 	}
 
-	p.sdb.Query("INSERT INTO books VALUES ('" + title + "')")
+	p.sdb.Query("INSERT INTO books VALUES ($1)", title)
 }
