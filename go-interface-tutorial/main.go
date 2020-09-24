@@ -52,6 +52,7 @@ func (sdb *ShopDB) CreateBooks() (bool, error) {
 }
 
 type API struct {
+	repository PostgresRepository
 }
 
 func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
