@@ -66,7 +66,7 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 
 	result := Result{
 		Results: []string{param1},
-		Count:   0,
+		Count:   len([]string{param1}),
 	}
 
 	res, _ := json.Marshal(result)
