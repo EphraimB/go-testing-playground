@@ -51,7 +51,10 @@ func (sdb *ShopDB) CreateBooks() (bool, error) {
 	}
 }
 
-func search(w http.ResponseWriter, r *http.Request) {
+type API struct {
+}
+
+func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	type Result struct {
@@ -85,7 +88,7 @@ func main() {
 	}
 	fmt.Printf("%s", sr)
 
-	http.HandleFunc("/", search)
+	http.HandleFunc("/", searchHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
