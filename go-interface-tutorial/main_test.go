@@ -70,11 +70,7 @@ func TestPostgresQueries(t *testing.T) {
 		sdb: &ShopDB{db},
 	}
 
-	tableCheck, err := p.sdb.Query("SELECT * FROM books;")
-
-	if tableCheck == nil {
-		p.sdb.Query("CREATE TABLE books (title VARCHAR(50) PRIMARY KEY)")
-	}
+	createBooks(p.sdb)
 
 	p.sdb.Query("DELETE FROM books WHERE title=$1", word)
 
