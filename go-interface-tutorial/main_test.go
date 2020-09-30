@@ -130,4 +130,35 @@ func TestHandlerWithNoQuery(t *testing.T) {
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println(string(body))
+
+	if resp.Status == "400" {
+		t.Error("Supposed to be no query")
+	}
+}
+
+func TestHandlerWithNoResults(t *testing.T) {
+	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	req, err := http.NewRequest("GET", "/search=testing", nil)
+	if err != nil {
+		return
+	}
+	w := httptest.NewRecorder()
+	api := API{
+		repository: PostgresRepository{
+			sdb: &ShopDB{db},
+		},
+	}
+	api.searchHandler(w, req)
+
+	resp := w.Result()
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
+
 }
