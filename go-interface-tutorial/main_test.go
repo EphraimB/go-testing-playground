@@ -76,11 +76,12 @@ func TestPostgresQueries(t *testing.T) {
 
 	createBooks(p.sdb)
 
-	p.sdb.Query("DELETE FROM books WHERE title=$1", word)
+	// p.sdb.Query("DELETE FROM books WHERE title=$1", word)
 
 	addBookWithTitle(word)
 
 	query := p.search(word)
+	p.sdb.Query("DELETE FROM books WHERE title=$1", word)
 
 	if len(query) != 1 {
 		t.Error("Wrong length of strings")
@@ -156,6 +157,39 @@ func TestHandlerWithNoResults(t *testing.T) {
 		},
 	}
 	api.searchHandler(w, req)
+
+	resp := w.Result()
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
+
+}
+
+func TestHandlerWithSeveralResults(t *testing.T) {
+	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	req, err := http.NewRequest("GET", "/search=testing", nil)
+	if err != nil {
+		return
+	}
+	w := httptest.NewRecorder()
+	api := API{
+		repository: PostgresRepository{
+			sdb: &ShopDB{db},
+		},
+	}
+	api.repository.sdb.Query("INSERT INTO books VALUES ($1)", "testing")
+	api.repository.sdb.Query("INSERT INTO books VALUES ($1)", "testingcute")
+	api.repository.sdb.Query("INSERT INTO books VALUES ($1)", "testingpinch")
+	api.searchHandler(w, req)
+	api.repository.sdb.Query("DELETE FROM books WHERE title=$1", "testing")
+	api.repository.sdb.Query("DELETE FROM books WHERE title=$1", "testingcute")
+	api.repository.sdb.Query("DELETE FROM books WHERE title=$1", "testingpinch")
 
 	resp := w.Result()
 	body, _ := ioutil.ReadAll(resp.Body)

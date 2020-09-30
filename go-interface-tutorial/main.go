@@ -142,7 +142,7 @@ func createBooks(sm ShopModel) (string, error) {
 // }
 
 func (p PostgresRepository) search(query string) []string {
-	rows, err := p.sdb.Query("SELECT * FROM books WHERE title=$1", query)
+	rows, err := p.sdb.Query("SELECT * FROM books WHERE title LIKE $1", query+"%")
 	if err != nil {
 		log.Fatal(err)
 	}
