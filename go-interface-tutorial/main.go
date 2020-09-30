@@ -51,6 +51,18 @@ func (sdb *ShopDB) CreateBooks() (bool, error) {
 	}
 }
 
+type Repository interface {
+	search(query string) []string
+}
+
+type PostgresRepository struct {
+	sdb *ShopDB
+}
+
+type FakeDBRepository struct {
+	searchQuery []string
+}
+
 type API struct {
 	repository PostgresRepository
 }
@@ -66,8 +78,8 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := Result{
-		Results: []string{param1},
-		Count:   len([]string{param1}),
+		Results: api.repository.search(param1),
+		Count:   len(api.repository.search(param1)),
 	}
 
 	res, _ := json.Marshal(result)
@@ -76,7 +88,6 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	m1 := &API{}
 	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
@@ -85,6 +96,12 @@ func main() {
 	defer db.Close()
 
 	shopDB := &ShopDB{db}
+
+	m1 := &API{
+		repository: PostgresRepository{
+			sdb: shopDB,
+		},
+	}
 	//sr, err := calculateSalesRate(shopDB)
 	sr, err := createBooks(shopDB)
 	if err != nil {
@@ -123,18 +140,6 @@ func createBooks(sm ShopModel) (string, error) {
 // 	rate := float64(sales) / float64(customers)
 // 	return fmt.Sprintf("%.2f", rate), nil
 // }
-
-type Repository interface {
-	search(query string) []string
-}
-
-type PostgresRepository struct {
-	sdb *ShopDB
-}
-
-type FakeDBRepository struct {
-	searchQuery []string
-}
 
 func (p PostgresRepository) search(query string) []string {
 	rows, err := p.sdb.Query("SELECT * FROM books WHERE title=$1", query)

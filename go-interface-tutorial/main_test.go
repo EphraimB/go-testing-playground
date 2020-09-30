@@ -3,7 +3,11 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 )
@@ -100,4 +104,30 @@ func addBookWithTitle(title string) {
 	}
 
 	p.sdb.Query("INSERT INTO books VALUES ($1)", title)
+}
+
+func TestHandlerWithNoQuery(t *testing.T) {
+	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	req, err := http.NewRequest("GET", "/", nil)
+	if err != nil {
+		return
+	}
+	w := httptest.NewRecorder()
+	api := API{
+		repository: PostgresRepository{
+			sdb: &ShopDB{db},
+		},
+	}
+	api.searchHandler(w, req)
+
+	resp := w.Result()
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
 }
