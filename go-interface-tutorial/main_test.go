@@ -146,7 +146,7 @@ func TestHandlerWithNoResults(t *testing.T) {
 	}
 	defer db.Close()
 
-	req, err := http.NewRequest("GET", "/search=testing", nil)
+	req, err := http.NewRequest("GET", "/?search=testing", nil)
 	if err != nil {
 		return
 	}
@@ -162,6 +162,19 @@ func TestHandlerWithNoResults(t *testing.T) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println(string(body))
 
+	// type Result struct {
+	// 	Results []string `json:"results"`
+	// 	Count   int      `json:"count"`
+	// }
+
+	// var result Result
+
+	// test := json.Unmarshal(body, &result)
+	// t.Error(test)
+
+	// if string(body).count != 0 {
+	// 	t.Error(resp)
+	// }
 }
 
 func TestHandlerWithSeveralResults(t *testing.T) {
@@ -173,7 +186,7 @@ func TestHandlerWithSeveralResults(t *testing.T) {
 	}
 	defer db.Close()
 
-	req, err := http.NewRequest("GET", "/search=testing", nil)
+	req, err := http.NewRequest("GET", "/?search=testing", nil)
 	if err != nil {
 		return
 	}
