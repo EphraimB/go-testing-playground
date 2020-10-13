@@ -72,6 +72,13 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Param1 is: " + param1)
 	w.Header().Set("Content-Type", "application/json")
 
+	if param1 == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error - Bad request - 400"))
+
+		return
+	}
+
 	type Result struct {
 		Results []string `json:"results"`
 		Count   int      `json:"count"`
@@ -84,6 +91,7 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 
 	res, _ := json.Marshal(result)
 	w.Write(res)
+
 	fmt.Println(string(res))
 }
 
@@ -142,7 +150,8 @@ func createBooks(sm ShopModel) (string, error) {
 // }
 
 func (p PostgresRepository) search(query string) []string {
-	rows, err := p.sdb.Query("SELECT * FROM books WHERE title LIKE $1", "%"+query+"%")
+	rows, err := p.sdb.Query("SELECT * FROM books WHERE title LIKE $1", query+"%")
+
 	if err != nil {
 		log.Fatal(err)
 	}

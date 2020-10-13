@@ -3,6 +3,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -132,7 +133,7 @@ func TestHandlerWithNoQuery(t *testing.T) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println(string(body))
 
-	if resp.Status == "400" {
+	if resp.Status != "400 Bad Request" {
 		t.Error("Supposed to be no query")
 	}
 }
@@ -162,19 +163,21 @@ func TestHandlerWithNoResults(t *testing.T) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println(string(body))
 
-	// type Result struct {
-	// 	Results []string `json:"results"`
-	// 	Count   int      `json:"count"`
-	// }
+	type Result struct {
+		Results []string `json:"results"`
+		Count   int      `json:"count"`
+	}
 
-	// var result Result
+	var result Result
 
-	// test := json.Unmarshal(body, &result)
-	// t.Error(test)
+	test := json.Unmarshal(body, &result)
+	if test != nil {
+		t.Error("Unmarshal error")
+	}
 
-	// if string(body).count != 0 {
-	// 	t.Error(resp)
-	// }
+	if result.Count != 0 {
+		t.Error("Expected 0 results. Results not 0.")
+	}
 }
 
 func TestHandlerWithSeveralResults(t *testing.T) {
@@ -208,4 +211,23 @@ func TestHandlerWithSeveralResults(t *testing.T) {
 	body, _ := ioutil.ReadAll(resp.Body)
 	fmt.Println(string(body))
 
+	type Result struct {
+		Results []string `json:"results"`
+		Count   int      `json:"count"`
+	}
+
+	var result Result
+
+	test := json.Unmarshal(body, &result)
+	if test != nil {
+		t.Error("Unmarshal error")
+	}
+
+	if result.Count != 3 {
+		t.Error("Expected 3 results. Results not 3.")
+	}
+
+	if strings.Join(result.Results, ",") != "testing,testingcute,testingpinch" {
+		t.Error("Expected testing, testingcute, and testingpinch")
+	}
 }
