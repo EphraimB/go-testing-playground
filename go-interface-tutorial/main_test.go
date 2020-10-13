@@ -178,6 +178,10 @@ func TestHandlerWithNoResults(t *testing.T) {
 	if result.Count != 0 {
 		t.Error("Expected 0 results. Results not 0.")
 	}
+
+	if resp.Status != "200 OK" {
+		t.Error("Supposed to be a query")
+	}
 }
 
 func TestHandlerWithSeveralResults(t *testing.T) {
