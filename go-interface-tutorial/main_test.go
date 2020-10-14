@@ -137,6 +137,10 @@ func TestHandlerWithNoQuery(t *testing.T) {
 	if resp.Status != "400 Bad Request" {
 		t.Error("Supposed to be no query")
 	}
+
+	if w.Body.String() != "Error - Bad request - 400" {
+		t.Error("Supposed to say 400 - bad request")
+	}
 }
 
 func TestHandlerWithNoResults(t *testing.T) {
