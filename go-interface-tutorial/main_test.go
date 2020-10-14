@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"sort"
 	"strings"
 	"testing"
 )
@@ -236,6 +237,7 @@ func TestHandlerWithSeveralResults(t *testing.T) {
 	if result.Count != 3 {
 		t.Error("Expected 3 results. Results not 3.")
 	}
+	sort.Strings(result.Results)
 
 	if strings.Join(result.Results, ",") != "testing,testingcute,testingpinch" {
 		t.Error("Expected testing, testingcute, and testingpinch")
