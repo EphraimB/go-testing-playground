@@ -3,7 +3,13 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/http/httptest"
+	"sort"
 	"strings"
 	"testing"
 )
@@ -72,11 +78,12 @@ func TestPostgresQueries(t *testing.T) {
 
 	createBooks(p.sdb)
 
-	p.sdb.Query("DELETE FROM books WHERE title=$1", word)
+	// p.sdb.Query("DELETE FROM books WHERE title=$1", word)
 
 	addBookWithTitle(word)
 
 	query := p.search(word)
+	p.sdb.Query("DELETE FROM books WHERE title=$1", word)
 
 	if len(query) != 1 {
 		t.Error("Wrong length of strings")
@@ -100,4 +107,143 @@ func addBookWithTitle(title string) {
 	}
 
 	p.sdb.Query("INSERT INTO books VALUES ($1)", title)
+}
+
+func TestHandlerWithNoQuery(t *testing.T) {
+	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	req, err := http.NewRequest("GET", "/", nil)
+	if err != nil {
+		return
+	}
+	w := httptest.NewRecorder()
+	api := API{
+		repository: PostgresRepository{
+			sdb: &ShopDB{db},
+		},
+	}
+	api.searchHandler(w, req)
+
+	resp := w.Result()
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
+
+	if resp.Status != "400 Bad Request" {
+		t.Error("Supposed to be no query")
+	}
+
+	if w.Body.String() != "Error - Bad request - 400" {
+		t.Error("Supposed to say 400 - bad request")
+	}
+}
+
+func TestHandlerWithNoResults(t *testing.T) {
+	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	req, err := http.NewRequest("GET", "/?search=testing", nil)
+	if err != nil {
+		return
+	}
+	w := httptest.NewRecorder()
+	api := API{
+		repository: PostgresRepository{
+			sdb: &ShopDB{db},
+		},
+	}
+	api.searchHandler(w, req)
+
+	resp := w.Result()
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
+
+	type Result struct {
+		Results []string `json:"results"`
+		Count   int      `json:"count"`
+	}
+
+	var result Result
+
+	test := json.Unmarshal(body, &result)
+	if test != nil {
+		t.Error("Unmarshal error")
+	}
+
+	if result.Count != 0 {
+		t.Error("Expected 0 results. Results not 0.")
+	}
+
+	if resp.Status != "200 OK" {
+		t.Error("Supposed to be a query")
+	}
+}
+
+func TestHandlerWithSeveralResults(t *testing.T) {
+	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	req, err := http.NewRequest("GET", "/?search=testing", nil)
+	if err != nil {
+		return
+	}
+	w := httptest.NewRecorder()
+	api := API{
+		repository: PostgresRepository{
+			sdb: &ShopDB{db},
+		},
+	}
+	api.repository.sdb.Query("INSERT INTO books VALUES ($1)", "testing")
+	api.repository.sdb.Query("INSERT INTO books VALUES ($1)", "testingcute")
+	api.repository.sdb.Query("INSERT INTO books VALUES ($1)", "testingpinch")
+	api.repository.sdb.Query("INSERT INTO books VALUES ($1)", "Pinny The Pooh")
+	api.repository.sdb.Query("INSERT INTO books VALUES ($1)", "Cutie")
+	api.repository.sdb.Query("INSERT INTO books VALUES ($1)", "Yakkadoodles")
+	api.searchHandler(w, req)
+	api.repository.sdb.Query("DELETE FROM books WHERE title=$1", "testing")
+	api.repository.sdb.Query("DELETE FROM books WHERE title=$1", "testingcute")
+	api.repository.sdb.Query("DELETE FROM books WHERE title=$1", "testingpinch")
+	api.repository.sdb.Query("DELETE FROM books WHERE title=$1", "Pinny The Pooh")
+	api.repository.sdb.Query("DELETE FROM books WHERE title=$1", "Cutie")
+	api.repository.sdb.Query("DELETE FROM books WHERE title=$1", "Yakkadoodles")
+
+	resp := w.Result()
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(string(body))
+
+	type Result struct {
+		Results []string `json:"results"`
+		Count   int      `json:"count"`
+	}
+
+	var result Result
+
+	test := json.Unmarshal(body, &result)
+	if test != nil {
+		t.Error("Unmarshal error")
+	}
+
+	if result.Count != 3 {
+		t.Error("Expected 3 results. Results not 3.")
+	}
+	sort.Strings(result.Results)
+
+	if strings.Join(result.Results, ",") != "testing,testingcute,testingpinch" {
+		t.Error("Expected testing, testingcute, and testingpinch")
+	}
 }

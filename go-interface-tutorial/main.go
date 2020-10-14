@@ -3,8 +3,10 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -49,6 +51,50 @@ func (sdb *ShopDB) CreateBooks() (bool, error) {
 	}
 }
 
+type Repository interface {
+	search(query string) []string
+}
+
+type PostgresRepository struct {
+	sdb *ShopDB
+}
+
+type FakeDBRepository struct {
+	searchQuery []string
+}
+
+type API struct {
+	repository PostgresRepository
+}
+
+func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
+	param1 := r.URL.Query().Get("search")
+	fmt.Println("Param1 is: " + param1)
+	w.Header().Set("Content-Type", "application/json")
+
+	if param1 == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error - Bad request - 400"))
+
+		return
+	}
+
+	type Result struct {
+		Results []string `json:"results"`
+		Count   int      `json:"count"`
+	}
+
+	result := Result{
+		Results: api.repository.search(param1),
+		Count:   len(api.repository.search(param1)),
+	}
+
+	res, _ := json.Marshal(result)
+	w.Write(res)
+
+	fmt.Println(string(res))
+}
+
 func main() {
 	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
@@ -58,6 +104,12 @@ func main() {
 	defer db.Close()
 
 	shopDB := &ShopDB{db}
+
+	m1 := &API{
+		repository: PostgresRepository{
+			sdb: shopDB,
+		},
+	}
 	//sr, err := calculateSalesRate(shopDB)
 	sr, err := createBooks(shopDB)
 	if err != nil {
@@ -65,7 +117,8 @@ func main() {
 	}
 	fmt.Printf("%s", sr)
 
-	//fmt.Println(PostgresRepository.searchTable)
+	http.HandleFunc("/", m1.searchHandler)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func createBooks(sm ShopModel) (string, error) {
@@ -96,20 +149,9 @@ func createBooks(sm ShopModel) (string, error) {
 // 	return fmt.Sprintf("%.2f", rate), nil
 // }
 
-type Repository interface {
-	search(query string) []string
-}
-
-type PostgresRepository struct {
-	sdb *ShopDB
-}
-
-type FakeDBRepository struct {
-	searchQuery []string
-}
-
 func (p PostgresRepository) search(query string) []string {
-	rows, err := p.sdb.Query("SELECT * FROM books WHERE title=$1", query)
+	rows, err := p.sdb.Query("SELECT * FROM books WHERE title LIKE $1", query+"%")
+
 	if err != nil {
 		log.Fatal(err)
 	}
