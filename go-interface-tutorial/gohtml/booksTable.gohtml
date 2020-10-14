@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Books table</title>
+    </head>
+    <body>
+        <form onsubmit="httpGetAsync()">
+            <input name="search" id="search" type="search">
+            <button type="submit">Go</button>
+
+            <table>
+                <tr>
+                <td class="tableResults"></td>
+                </tr>
+            </table>
+        </form>
+        <script>
+            function httpGetAsync(theUrl, callback) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function() { 
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    callback(xmlHttp.responseText);
+                }
+                xmlHttp.open("GET", localhost:8080/booksTable, true); // true for asynchronous 
+                xmlHttp.send(null);
+            }
+        </script>
+    </body>
+</html>

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"time"
@@ -95,6 +96,15 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(string(res))
 }
 
+func (api *API) booksTableHandler(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles("gohtml/booksTable.gohtml")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	t.Execute(w, nil)
+}
+
 func main() {
 	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
@@ -118,6 +128,7 @@ func main() {
 	fmt.Printf("%s", sr)
 
 	http.HandleFunc("/", m1.searchHandler)
+	http.HandleFunc("/booksTable", m1.booksTableHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
