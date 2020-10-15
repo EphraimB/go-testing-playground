@@ -16,13 +16,14 @@
             </table>
         </form>
         <script>
-            function httpGetAsync(theUrl, callback) {
+            document.querySelector('form').addEventListener('submit', httpGetAsync)
+            function httpGetAsync(e) {
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.onreadystatechange = function() { 
                 if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
                     callback(xmlHttp.responseText);
                 }
-                xmlHttp.open("GET", localhost:8080/booksTable, true); // true for asynchronous 
+                xmlHttp.open("GET", "http://localhost:8080/?search="+document.getElementById("search").value, true); // true for asynchronous 
                 xmlHttp.send(null);
             }
         </script>
