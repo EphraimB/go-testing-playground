@@ -129,6 +129,7 @@ func main() {
 
 	http.HandleFunc("/", m1.searchHandler)
 	http.HandleFunc("/booksTable", m1.booksTableHandler)
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 

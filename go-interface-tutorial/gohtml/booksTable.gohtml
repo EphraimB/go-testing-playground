@@ -5,13 +5,24 @@
         <title>Books table</title>
     </head>
     <body>
+    <style>
+        table, tr {
+            border: 1px solid black;
+        }
+    </style>
         <form onsubmit="httpGetAsync()">
-            <input name="search" id="search" type="search">
-            <button type="submit">Go</button>
-
+            <div>
+                <input name="search" id="search" type="search">
+                <button type="submit">Go</button>
+            </div>
+            <br>
             <table>
                 <tr>
-                <td class="tableResults"></td>
+                    <th>Results</th>
+                </tr>
+                <tr>
+                    <td class="tableResults">Testing</td>
+                    <td class="tableResults">Testing</td>
                 </tr>
             </table>
         </form>
