@@ -21,8 +21,8 @@
                 <th>Results</th>
             </tr>
             <tr>
-                <td class="tableCount">1</td>
-                <td class="tableResults"></td>
+                <td id="tableCount"></td>
+                <td id="tableResults"></td>
             </tr>
         </table>
         <script>
@@ -31,7 +31,10 @@
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.onreadystatechange = function() { 
                 if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-                    console.log(xmlHttp.responseText);
+                    jsonResponse = JSON.parse(xmlHttp.responseText)
+                    console.log(jsonResponse);
+                    document.getElementById("tableResults").innerHTML = jsonResponse.results;
+                    document.getElementById("tableCount").innerHTML = jsonResponse.count;
                 }
                 xmlHttp.open("GET", "http://localhost:8080/?search="+document.getElementById("search").value, true); // true for asynchronous 
                 xmlHttp.send(null);
