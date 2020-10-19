@@ -29,7 +29,7 @@
         </form>
         <script>
             document.querySelector('form').addEventListener('submit', httpGetAsync)
-            function httpGetAsync(e) {
+            function httpGetAsync() {
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.onreadystatechange = function() { 
                 if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
