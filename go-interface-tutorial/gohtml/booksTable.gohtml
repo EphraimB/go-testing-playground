@@ -10,25 +10,23 @@
             border: 1px solid black;
         }
     </style>
-        <form>
-            <div>
-                <input name="search" id="search" type="search">
-                <button type="submit">Go</button>
-            </div>
-            <br>
-            <table>
-                <tr>
-                    <th>Count</th>
-                    <th>Results</th>
-                </tr>
-                <tr>
-                    <td class="tableCount">1</td>
-                    <td class="tableResults"></td>
-                </tr>
-            </table>
-        </form>
+        <div>
+            <input name="search" id="search" type="search">
+            <button>Go</button>
+        </div>
+        <br>
+        <table>
+            <tr>
+                <th>Count</th>
+                <th>Results</th>
+            </tr>
+            <tr>
+                <td class="tableCount">1</td>
+                <td class="tableResults"></td>
+            </tr>
+        </table>
         <script>
-            document.querySelector('form').addEventListener('submit', httpGetAsync)
+            document.querySelector('button').addEventListener('click', httpGetAsync)
             function httpGetAsync() {
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.onreadystatechange = function() { 
