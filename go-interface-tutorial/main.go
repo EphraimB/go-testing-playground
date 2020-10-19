@@ -5,13 +5,19 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"html/template"
 	"log"
 	"net/http"
+	"text/template"
 	"time"
 
 	_ "github.com/lib/pq"
 )
+
+var tpl *template.Template
+
+func init() {
+	tpl = template.Must(template.ParseGlob("gohtml/*.gohtml"))
+}
 
 // Create our own custom ShopModel interface. Notice that it is perfectly
 // fine for an interface to describe multiple methods, and that it should
@@ -97,12 +103,7 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) booksTableHandler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("gohtml/booksTable.gohtml")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	t.Execute(w, nil)
+	tpl.ExecuteTemplate(w, "booksTable.gohtml", nil)
 }
 
 func main() {
