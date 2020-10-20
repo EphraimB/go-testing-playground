@@ -20,11 +20,12 @@
         <script>
             document.querySelector('button').addEventListener('click', httpGetAsync);
             function httpGetAsync() {
+                document.getElementById("table").innerHTML = "";
+
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.onreadystatechange = function() {
                     if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
                         jsonResponse = JSON.parse(xmlHttp.responseText);
-                        //jsonResponseResults = JSON.parse(xmlHttp.responseText.results);
                         for(i=0; i < jsonResponse.results.length; i++) {
                             var createTableRow = document.createElement("tr");
                             var createTableData = document.createElement("td");
