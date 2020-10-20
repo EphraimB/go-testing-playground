@@ -29,17 +29,18 @@
             document.querySelector('button').addEventListener('click', httpGetAsync)
             function httpGetAsync() {
                 var xmlHttp = new XMLHttpRequest();
-                xmlHttp.onreadystatechange = function() { 
-                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-                    jsonResponse = JSON.parse(xmlHttp.responseText);
-                    jsonResponseResults = JSON.parse(xmlHttp.responseText.results);
-                    for(i=0; i < document.getElementsByClassName("tableResults").length; i++) {
-                        document.getElementsByClassName("tableResults")[i].innerHTML = jsonResponseResults[i];
+                xmlHttp.onreadystatechange = function() {
+                    if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                        jsonResponse = JSON.parse(xmlHttp.responseText);
+                        jsonResponseResults = JSON.parse(xmlHttp.responseText.results);
+                        for(i=0; i < document.getElementsByClassName("tableResults").length; i++) {
+                            document.getElementsByClassName("tableResults")[i].innerHTML = jsonResponseResults[i];
+                        }
+                        document.getElementById("tableCount").innerHTML = jsonResponse.count;
                     }
-                    //document.getElementById("tableCount").innerHTML = jsonResponse.count;
+                    xmlHttp.open("GET", "http://localhost:8080/?search="+document.getElementById("search").value, true); // true for asynchronous 
+                    xmlHttp.send(null);
                 }
-                xmlHttp.open("GET", "http://localhost:8080/?search="+document.getElementById("search").value, true); // true for asynchronous 
-                xmlHttp.send(null);
             }
         </script>
     </body>
