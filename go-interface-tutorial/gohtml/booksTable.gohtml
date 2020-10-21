@@ -19,12 +19,20 @@
                 <button>Go</button>
             </div>
             <br>
-            <table id="table">
+            <table id="table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th class="th-sm">Book titles</th>
+                    <tr>
+                </thead>
+                <tbody id="tbody">
+
+                </tbody>
             </table>
             <script>
                 document.querySelector('button').addEventListener('click', httpGetAsync);
                 function httpGetAsync() {
-                    document.getElementById("table").innerHTML = "";
+                    document.getElementById("tbody").innerHTML = "";
 
                     var xmlHttp = new XMLHttpRequest();
                     xmlHttp.onreadystatechange = function() {
@@ -36,7 +44,7 @@
 
                                 createTableData.setAttribute("class", "tableResults");
                                 createTableRow.appendChild(createTableData);
-                                document.getElementById("table").appendChild(createTableRow);
+                                document.getElementById("tbody").appendChild(createTableRow);
 
                                 document.getElementsByClassName("tableResults")[i].innerHTML = jsonResponse.results[i];
                             }
@@ -45,7 +53,7 @@
 
                             createTableDataCount.setAttribute("id", "tableCount");
                             createTableRowCount.appendChild(createTableDataCount);
-                            document.getElementById("table").appendChild(createTableRowCount)
+                            document.getElementById("tbody").appendChild(createTableRowCount)
                             document.getElementById("tableCount").innerHTML = "Count: " + jsonResponse.count;
                         }
                     }
