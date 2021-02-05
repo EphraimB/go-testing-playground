@@ -7,10 +7,17 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"text/template"
 	"time"
 
 	_ "github.com/lib/pq"
 )
+
+var tpl *template.Template
+
+func init() {
+	tpl = template.Must(template.ParseGlob("gohtml/*.gohtml"))
+}
 
 // Create our own custom ShopModel interface. Notice that it is perfectly
 // fine for an interface to describe multiple methods, and that it should
@@ -95,6 +102,10 @@ func (api *API) searchHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(string(res))
 }
 
+func (api *API) booksTableHandler(w http.ResponseWriter, r *http.Request) {
+	tpl.ExecuteTemplate(w, "booksTable.gohtml", nil)
+}
+
 func main() {
 	connStr := "host=localhost port=5400 user=docker password=docker sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
@@ -118,6 +129,8 @@ func main() {
 	fmt.Printf("%s", sr)
 
 	http.HandleFunc("/", m1.searchHandler)
+	http.HandleFunc("/booksTable", m1.booksTableHandler)
+
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
